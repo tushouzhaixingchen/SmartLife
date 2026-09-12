@@ -10,16 +10,24 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/feature_background" />
-            <option value="$PROJECT_DIR$/feature_charts" />
-            <option value="$PROJECT_DIR$/feature_ipc" />
-            <option value="$PROJECT_DIR$/feature_music" />
-            <option value="$PROJECT_DIR$/feature_notes" />
-            <option value="$PROJECT_DIR$/feature_responsive" />
-            <option value="$PROJECT_DIR$/feature_user" />
-            <option value="$PROJECT_DIR$/feature_weather" />
-            <option value="$PROJECT_DIR$/library_common" />
-            <option value="$PROJECT_DIR$/library_network" />
+            <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/feature_ai" />
+            <option value="$PROJECT_DIR$/features/feature_background" />
+            <option value="$PROJECT_DIR$/features/feature_charts" />
+            <option value="$PROJECT_DIR$/features/feature_home" />
+            <option value="$PROJECT_DIR$/features/feature_ipc" />
+            <option value="$PROJECT_DIR$/features/feature_music" />
+            <option value="$PROJECT_DIR$/features/feature_notes" />
+            <option value="$PROJECT_DIR$/features/feature_responsive" />
+            <option value="$PROJECT_DIR$/features/feature_user" />
+            <option value="$PROJECT_DIR$/features/feature_weather" />
+            <option value="$PROJECT_DIR$/features/shell_bottom" />
+            <option value="$PROJECT_DIR$/libraries" />
+            <option value="$PROJECT_DIR$/libraries/library_common" />
+            <option value="$PROJECT_DIR$/libraries/library_network" />
+            <option value="$PROJECT_DIR$/shell" />
+            <option value="$PROJECT_DIR$/shell/shell_bottom" />
+            <option value="$PROJECT_DIR$/shell/shell_launcher" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -45,8 +45,8 @@ android {
 
 dependencies {
     // ===== 基础库（所有公共依赖通过它传递过来）=====
-    implementation(project(":library_common"))
-    implementation(project(":library_network"))
+    implementation(project(":libraries:library_common"))
+    implementation(project(":libraries:library_network"))
 
     // ===== 业务模块（后续创建后逐个取消注释）=====
     // implementation(project(":module-adaptation"))
