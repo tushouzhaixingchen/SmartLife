@@ -49,14 +49,19 @@ dependencies {
     implementation(project(":libraries:library_network"))
 
     // ===== 业务模块（后续创建后逐个取消注释）=====
-    // implementation(project(":module-adaptation"))
-    // implementation(project(":module-chart"))
-    // implementation(project(":module-ipc"))
-    // implementation(project(":module-music"))
-    // implementation(project(":module-note"))
-    // implementation(project(":module-task"))
-    // implementation(project(":module-user"))
-    // implementation(project(":module-weather"))
+    implementation(project(":features:feature_ai"))
+    implementation(project(":features:feature_background"))
+    implementation(project(":features:feature_charts"))
+    implementation(project(":features:feature_home"))
+    implementation(project(":features:feature_ipc"))
+    implementation(project(":features:feature_music"))
+    implementation(project(":features:feature_notes"))
+    implementation(project(":features:feature_responsive"))
+    implementation(project(":features:feature_user"))
+    implementation(project(":features:feature_weather"))
+    // ===== Shell =====
+    implementation(project(":shell:shell_bottom"))
+    implementation(project(":shell:shell_launcher"))
     // ===== Hilt（插件要求必须在本模块显式声明）=====
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

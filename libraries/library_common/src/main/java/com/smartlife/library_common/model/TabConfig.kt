@@ -1,7 +1,7 @@
 package com.smartlife.library_common.model
 
 /**
- * 底部导航栏Tab配置数据类
+ * 底部导航栏Tab配置的数据类
  * 定义在library_common中，供shell_bottom和各feature模块共同依赖
  */
 data class TabConfig(

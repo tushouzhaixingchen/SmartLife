@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.smartlife.feature_music"
+    namespace = "com.smartlife.feature_home"
     compileSdk =34
 
     defaultConfig {
