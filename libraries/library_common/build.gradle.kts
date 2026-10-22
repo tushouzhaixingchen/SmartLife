@@ -61,6 +61,9 @@ dependencies {
     // ==== arouter ====
     api(libs.arouter.api)
 
+    // ===== 数据存储datastore =====
+    api(libs.androidx.datastore)
+
     // ===== 测试 =====
     testImplementation(libs.junit)           // 单元测试框架，测试纯逻辑代码（不依赖 Android 环境）
     androidTestImplementation(libs.androidx.junit)           // Android 仪器测试框架，在真机或模拟器上运行测试

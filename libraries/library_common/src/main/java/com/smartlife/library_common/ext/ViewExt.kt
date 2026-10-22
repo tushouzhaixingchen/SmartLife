@@ -49,7 +49,7 @@ fun View.gone() {
 
 /**
  * 根据条件切换 View 的显示/隐藏
- * @param isVisible true 显示，false 隐藏（gone）
+ *  * @param isVisible true 显示，false 隐藏（gone）
  */
 fun View.setVisibleOrGone(isVisible: Boolean) {
     visibility = if (isVisible) View.VISIBLE else View.GONE

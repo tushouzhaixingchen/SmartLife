@@ -1,5 +1,6 @@
 package com.smartlife.library_common.base
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
+        // 📌 全局统一强制竖屏，所有子类自动生效
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = getViewBinding(layoutInflater)
         setContentView(binding.root)
     }

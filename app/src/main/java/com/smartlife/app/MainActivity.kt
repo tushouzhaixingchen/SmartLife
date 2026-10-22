@@ -1,24 +1,9 @@
-/*
-修复已全部完成，Gradle 正在后台编译，完成后我会告知你结果。
-
-先总结一下发现的问题（衔接断裂点）：
-
-1. 根本原因： BottomNavBar.kt 的 setupTabs() 是空实现 ——只把 tabs 存了起来，里面全是 TODO，从未把 Tab 添加到 BottomNavigationView 的 Menu 中。Menu 为空时 BottomNavigationView 高度为 0，所以整个导航栏看不见。
-2. 回调链路也是断的 ： onTabSelectedListener 原来只在 ViewPager2 的翻页回调里触发，但 ViewPager2 从未设置过 Adapter，所以你在 MainActivity 里写的 Fragment 切换永远不会执行。
-3. 两套页面容器冲突 ：MainActivity 布局里有 fragment_container ，而 BottomNavBar 内部又塞了一个 ViewPager2 想自己管页面——两套机制并存且都没接通。另外 ViewPager2 在你的 libs.versions.toml 里根本没声明依赖，原代码实际上也编译不过。
-修复方式（符合你现有的解耦设计：shell 只负责渲染导航 + 回调 tabId，app 负责装配 Fragment）：
-
-- 4 个分辨率版本的 view_bottom_nav.xml 移除 ViewPager2，只保留 BottomNavigationView；
-- setupTabs() 动态构建 Menu，用基于位置的稳定正数 ID（替代可能为负/碰撞的 String.hashCode() ），点击时切换 outline/filled 图标并直接回调；
-- MainActivity 默认首页改为复用 fragmentMap 中的实例。
-另外提醒：TabConfig 里的 isCenterHighlight （AI 中间凸起按钮）目前 BottomNavigationView 原生不支持，需要后续叠加 FAB/自定义 View 实现，这次没有改动它。
-*/
-
 package com.smartlife.app
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
 import com.smartlife.app.databinding.ActivityMainBinding
+import com.smartlife.library_common.base.BaseActivity
 import com.smartlife.library_common.model.TabConfig
 import com.smartlife.feature_home.HomeFragment
 import com.smartlife.feature_music.MusicFragment
@@ -26,14 +11,16 @@ import com.smartlife.feature_ai.AiFragment
 import com.smartlife.feature_notes.NotesFragment
 import com.smartlife.feature_user.UserFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    private lateinit var binding: ActivityMainBinding
+    // 实现父类抽象方法：返回本页面的 ViewBinding
+    override fun getViewBinding(inflater: LayoutInflater): ActivityMainBinding {
+        return ActivityMainBinding.inflate(inflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)//binding.root是布局文件的根View（例如LinearLayout、ConstraintLayout等）。
+        // binding 已被 BaseActivity 创建并 setContentView，这里直接写业务逻辑
 
         setupBottomNavigation()
     }
@@ -74,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        // 组装Tab与Fragment的映射
+        // 组装Tab与Fragment的映射（注意：用 mapOf 存的是实例，重复 setup 时会复用，符合你原有逻辑）
         val fragmentMap = mapOf(
             "home" to HomeFragment(),
             "music" to MusicFragment(),
@@ -93,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 默认显示首页（复用fragmentMap中的实例，避免重复创建）
+        // 默认显示首页（复用 fragmentMap 中的实例，避免重复创建）
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragmentMap.getValue("home"))
             .commit()

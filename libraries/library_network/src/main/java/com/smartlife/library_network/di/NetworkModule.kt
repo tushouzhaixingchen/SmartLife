@@ -1,3 +1,9 @@
+/**
+ * 网络模块：基于 Hilt 提供全局单例的 OkHttpClient 与 Retrofit。
+ * 统一配置公共请求头拦截器、日志拦截器及 15 秒超时时间。
+ * 使用 Gson 作为 JSON 转换器，BASE_URL 需替换为真实后端地址。
+ * 其他类可直接通过 @Inject 注入 Retrofit 使用，无需手动创建。
+ */
 package com.smartlife.library_network.di
 
 import com.smartlife.library_network.interceptor.ApiInterceptor

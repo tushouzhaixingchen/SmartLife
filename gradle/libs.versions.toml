@@ -45,6 +45,8 @@ arouter = "1.5.2"
 kotlinx-serialization = "1.6.3"
 retrofit-kotlinx-serialization = "1.0.0"
 
+# datastore
+datastore = "1.1.1"
 
 [libraries]
 # --- AndroidX ---
@@ -95,6 +97,9 @@ arouter-api = { group = "com.alibaba", name = "arouter-api", version.ref = "arou
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 retrofit2-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-kotlinx-serialization" }
 
+# --- datastore ---
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -102,3 +107,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+

@@ -9,6 +9,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * 应用基础模块：基于 Hilt 提供全局单例的 Application Context 与 SharedPreferences。
+ * 通过 @InstallIn(SingletonComponent) 保证依赖贯穿整个 App 生命周期。
+ * SharedPreferences 使用 "app_prefs" 文件名与 MODE_PRIVATE 私有模式。
+ * 其他类可直接通过 @Inject 注入 Context 或 SharedPreferences 使用。
+ */
 @Module //这表示一个模块，没有这个注解，Hilt将不会识别这个类
 @InstallIn(SingletonComponent::class) //这表示这个模块将提供单例实例
 object AppModule { //这里使用object关键字，表示这是一个单例对象，里面的方法都是静态的，不需要创建对象就可以调用
