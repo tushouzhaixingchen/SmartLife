@@ -22,6 +22,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.first
 
 /**
  * DataStore 工具类：基于 Jetpack DataStore 封装，用于替代 SharedPreferences。
@@ -190,7 +191,7 @@ object DataStoreUtils {
         var value: T? = null
         // 使用 runBlocking 阻塞等待 Flow 发出第一个值
         runBlocking {
-            this@getValueOrNull.collect { value = it }
+            this@getValueOrNull.first()
         }
         return value
     }

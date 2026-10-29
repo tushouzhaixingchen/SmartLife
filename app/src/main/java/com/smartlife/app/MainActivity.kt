@@ -3,65 +3,60 @@ package com.smartlife.app
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.smartlife.app.databinding.ActivityMainBinding
+import com.smartlife.library_common.auth.AppAccessConfig
+import com.smartlife.library_common.auth.FeatureKey
+import com.smartlife.library_common.auth.LoginGuard
+import com.smartlife.library_common.auth.LoginLauncher
+import com.smartlife.library_common.auth.LoginMode
 import com.smartlife.library_common.base.BaseActivity
 import com.smartlife.library_common.model.TabConfig
+import com.smartlife.feature_ai.AiFragment
 import com.smartlife.feature_home.HomeFragment
 import com.smartlife.feature_music.MusicFragment
-import com.smartlife.feature_ai.AiFragment
 import com.smartlife.feature_notes.NotesFragment
-import com.smartlife.feature_user.UserFragment
+import com.smartlife.feature_user.ui.profile.UserFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    // 实现父类抽象方法：返回本页面的 ViewBinding
-    override fun getViewBinding(inflater: LayoutInflater): ActivityMainBinding {
-        return ActivityMainBinding.inflate(inflater)
-    }
+    override fun getViewBinding(inflater: LayoutInflater): ActivityMainBinding =
+        ActivityMainBinding.inflate(inflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // binding 已被 BaseActivity 创建并 setContentView，这里直接写业务逻辑
 
-        setupBottomNavigation()
+        // 强制登录门禁（游客模式直接跳过）
+        if (AppAccessConfig.loginMode == LoginMode.FORCE_LOGIN && !LoginGuard.isLogin()) {
+            LoginLauncher.launchLogin(this)
+            finish()
+            return
+        }
+
+        // 只有首次创建才组装底部导航，避免 Activity 重建时 Fragment 叠加
+        if (savedInstanceState == null) {
+            setupBottomNavigation()
+        }
     }
 
     private fun setupBottomNavigation() {
-        // 定义底部导航Tab配置
         val tabs = listOf(
-            TabConfig(
-                id = "home",
-                title = "首页",
-                iconResId = com.smartlife.feature_home.R.drawable.ic_home_outline,
-                selectedIconResId = com.smartlife.feature_home.R.drawable.ic_home_filled
-            ),
-            TabConfig(
-                id = "music",
-                title = "音乐",
-                iconResId = com.smartlife.feature_music.R.drawable.ic_music_outline,
-                selectedIconResId = com.smartlife.feature_music.R.drawable.ic_music_filled
-            ),
-            TabConfig(
-                id = "ai",
-                title = "AI",
-                iconResId = com.smartlife.feature_ai.R.drawable.ic_ai_outline,
-                selectedIconResId = com.smartlife.feature_ai.R.drawable.ic_ai_filled,
-                isCenterHighlight = true
-            ),
-            TabConfig(
-                id = "notes",
-                title = "笔记",
-                iconResId = com.smartlife.feature_notes.R.drawable.ic_notes_outline,
-                selectedIconResId = com.smartlife.feature_notes.R.drawable.ic_notes_filled
-            ),
-            TabConfig(
-                id = "mine",
-                title = "我的",
-                iconResId = com.smartlife.feature_user.R.drawable.ic_mine_outline,
-                selectedIconResId = com.smartlife.feature_user.R.drawable.ic_mine_filled
-            )
+            TabConfig("home", "首页",
+                com.smartlife.feature_home.R.drawable.ic_home_outline,
+                com.smartlife.feature_home.R.drawable.ic_home_filled),
+            TabConfig("music", "音乐",
+                com.smartlife.feature_music.R.drawable.ic_music_outline,
+                com.smartlife.feature_music.R.drawable.ic_music_filled),
+            TabConfig("ai", "AI",
+                com.smartlife.feature_ai.R.drawable.ic_ai_outline,
+                com.smartlife.feature_ai.R.drawable.ic_ai_filled,
+                isCenterHighlight = true),
+            TabConfig("notes", "笔记",
+                com.smartlife.feature_notes.R.drawable.ic_notes_outline,
+                com.smartlife.feature_notes.R.drawable.ic_notes_filled),
+            TabConfig("mine", "我的",
+                com.smartlife.feature_user.R.drawable.ic_mine_outline,
+                com.smartlife.feature_user.R.drawable.ic_mine_filled)
         )
 
-        // 组装Tab与Fragment的映射（注意：用 mapOf 存的是实例，重复 setup 时会复用，符合你原有逻辑）
         val fragmentMap = mapOf(
             "home" to HomeFragment(),
             "music" to MusicFragment(),
@@ -70,17 +65,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             "mine" to UserFragment()
         )
 
-        // 设置底部导航
         binding.bottomNavBar?.setupTabs(tabs)
+
         binding.bottomNavBar?.onTabSelectedListener = { tabId ->
-            fragmentMap[tabId]?.let { fragment ->
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit()
+            val key = when (tabId) {
+                "ai" -> FeatureKey.AI_CHAT
+                "notes" -> FeatureKey.CREATE_NOTE
+                "mine" -> FeatureKey.MINE_PROFILE
+                else -> null
             }
+            LoginGuard.guard(
+                activity = this,
+                key = key,
+                onGranted = {
+                    fragmentMap[tabId]?.let { fragment ->
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .commit()
+                    }
+                }
+            )
         }
 
-        // 默认显示首页（复用 fragmentMap 中的实例，避免重复创建）
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragmentMap.getValue("home"))
             .commit()

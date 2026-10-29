@@ -1,4 +1,4 @@
-package com.smartlife.feature_user
+package com.smartlife.feature_user.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -23,7 +23,7 @@ open class BaseViewModel : ViewModel() {
     * MutableStateFlow的value是var（可变的），表示我们可以修改它的值
     * Kotlin的变量声明写法：val/var 变量名：类型=初始值
     * */
-    private val _uiState = MutableStateFlow<UiState<Any?>>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState<Any?>>(UiState.Empty)
     val uiState: StateFlow<UiState<Any?>> = _uiState.asStateFlow()
 
     /*全局异常处理器，防止协程崩溃导致App闪退
@@ -36,19 +36,20 @@ open class BaseViewModel : ViewModel() {
     /*
     * 统一的协程启动器
     * 所有子ViewModle都通过这个方法来启动协程
+    * 注意：参数名不能叫 onError，否则会遮蔽下方成员函数 onError(String)，导致子类 lambda 里无法调用它
     * */
-    protected fun launch(onError: (Throwable) -> Unit= { _uiState.value= UiState.Error(it.message ?:"未知错误") }, block: suspend () -> Unit) {
+    protected fun launch(errorAction: (Throwable) -> Unit= { _uiState.value= UiState.Error(it.message ?:"未知错误") }, block: suspend () -> Unit) {
         viewModelScope.launch(exceptionHandler) {
             try {
                 block()
             } catch (e: Exception) {
-                onError(e)
+                errorAction(e)
             }
         }
     }
 
     /*更新UI状态成功*/
-    protected fun <T> onSuccess(data: T){
+    protected fun <T> emitSuccess(data: T){
         _uiState.value=UiState.Success(data)
     }
 
@@ -60,5 +61,10 @@ open class BaseViewModel : ViewModel() {
     /*更新UI状态为错误*/
     protected fun onError(message: String){
         _uiState.value= UiState.Error(message)
+    }
+
+    // 👇 2. 新增一个重置状态的方法，供子类调用
+    protected fun onResetState() {
+        _uiState.value = UiState.Empty
     }
 }
