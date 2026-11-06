@@ -1,10 +1,19 @@
 package com.smartlife.feature_user.ui.login
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import androidx.activity.R
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,11 +40,16 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("Lucas", "LoginActivity onCreate")
-        renderLoginTypes()                                   // 按启用的方式渲染 Tab/按钮
+        renderLoginTypes()
+        setupAgreementText()// 按启用的方式渲染 Tab/按钮
+        //去掉点击文字时系统默认的灰色背景块，让视觉更干净
         binding.btnSendCode.clickDebounce { vm.sendCode(currentType, binding.etPhone.text.toString()) }
-        binding.btnLogin.clickDebounce { vm.login(currentType, binding.etPhone.text.toString(), binding.etCode.text.toString()) }
-        binding.tvGoRegister.setOnClickListener { startActivity(Intent(this, RegisterActivity::class.java)) }
+        binding.btnLogin.clickDebounce {
+            vm.login(currentType, binding.etPhone.text.toString(),
+                binding.etCode.text.toString(),
+                binding.cbAgreement.isChecked)
+        }
+//        binding.tvGoRegister.setOnClickListener { startActivity(Intent(this, RegisterActivity::class.java)) }
 
         observeState()
         observeCountdown()
@@ -55,18 +69,18 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 vm.uiState.collect { s ->
                     when (s) {
                         is UiState.Success -> {
-                            binding.progressBar.visibility = android.view.View.GONE
+                            binding.progressBar.visibility = View.GONE
                             onLoginSuccess()
                         }
                         is UiState.Error -> {
-                            binding.progressBar.visibility = android.view.View.GONE
+                            binding.progressBar.visibility = View.GONE
                             ToastUtils.showShort(s.message)
                         }
                         is UiState.Loading -> {
-                            binding.progressBar.visibility = android.view.View.VISIBLE
+                            binding.progressBar.visibility = View.VISIBLE
                         }
                         is UiState.Empty -> {
-                            binding.progressBar.visibility = android.view.View.GONE
+                            binding.progressBar.visibility = View.GONE
                         }
                     }
                 }
@@ -102,5 +116,49 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
         // 3. 销毁当前登录页
         finish()
+    }
+
+    // 处理用户协议和隐私政策相关逻辑
+    fun setupAgreementText(){
+        val fullText="我已阅读并同意《用户协议》和《隐私政策》"
+        val spannableString = SpannableString(fullText)
+        val userText="《用户协议》"
+        val privacyText="《隐私政策》"
+
+        val userStart=fullText.indexOf(userText)
+        val userEnd=userStart+userText.length
+        val privacyStart=fullText.indexOf(privacyText)
+        val privacyEnd=privacyStart+privacyText.length
+
+        val userClickSpan= object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                ToastUtils.showShort("打开了用户协议")
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = 0xFF2196F3.toInt()
+                ds.isUnderlineText=false//去掉下划线
+            }
+        }
+
+        val privacyClickSpan=object: ClickableSpan() {
+            override fun onClick(widget: View) {
+                ToastUtils.showShort("打开了隐私政策")
+            }
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = 0xFF2196F3.toInt()
+                ds.isUnderlineText=false//去掉下划线
+            }
+        }
+
+        //绑定ClickableSpan
+        spannableString.setSpan(userClickSpan,userStart,userEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(privacyClickSpan,privacyStart,privacyEnd,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        //去掉点击文字时系统默认的灰色背景块，让视觉更干净
+        binding.tvAgreement.text=spannableString
+        binding.tvAgreement.movementMethod = LinkMovementMethod.getInstance()
+        binding.tvAgreement.highlightColor= Color.TRANSPARENT
     }
 }

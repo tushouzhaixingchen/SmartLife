@@ -56,7 +56,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun login(type: AuthType, phoneRaw: String, codeRaw: String) {
+    fun login(type: AuthType, phoneRaw: String, codeRaw: String, agreement: Boolean) {
         val phone = phoneRaw.trim()
         if (type == AuthType.PHONE_SMS && !phone.matches(phoneRegex)) {
             onError("手机号格式不正确")
@@ -65,6 +65,10 @@ class LoginViewModel @Inject constructor(
         if (codeRaw.isBlank()) {
             onError("请输入验证码")
             return                                   // 这里也要 return
+        }
+        if (!agreement) {
+            onError("请同意用户协议和隐私政策")
+            return
         }
         launch {
             onLoading()

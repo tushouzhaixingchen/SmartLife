@@ -9,7 +9,6 @@ object LoginLauncher {
         const val TAG = "MainActivity"
     }
     fun launchLogin(ctx: Context) {
-        Log.d("Lucas", "Launching login activity")
         ctx.startActivity(Intent().setClassName(ctx.packageName,
             "com.smartlife.feature_user.ui.login.LoginActivity"))
     }

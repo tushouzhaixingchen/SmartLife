@@ -19,12 +19,11 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="40dp" />
 
-    <!-- 登录方式切换 Tabs -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLoginType"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp" />
+        android:text="新用户首次登录自动注册账号"
+        android:textSize="15sp" />
 
     <!-- 手机号/账号输入框 -->
     <com.google.android.material.textfield.TextInputLayout
@@ -48,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="10dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilCode"
@@ -74,8 +73,35 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginStart="12dp"
-            android:text="获取验证码" />
+            android:text="获取验证码"
+            android:textSize="12sp"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_password_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_login_switch"
+            android:contentDescription="账号密码登录"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="账号密码登录"
+            android:textSize="14dp"
+            android:textColor="#2563EB"/>
+    </LinearLayout>
+
+
 
     <!-- 登录按钮 -->
     <Button
@@ -84,19 +110,48 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="登录"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
-    <!-- 去注册链接 -->
-    <TextView
-        android:id="@+id/tvGoRegister"
+    <!-- 登录方式切换 Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLoginType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="还没有账号？去注册"
-        android:textColor="#2563EB"
-        android:textSize="14sp" />
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/cb_agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"/>
+
+        <TextView
+            android:id="@+id/tv_agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:textColor="#666666"/>
+    </LinearLayout>
+
+<!--    &lt;!&ndash; 去注册链接 &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/tvGoRegister"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:text="还没有账号？去注册"-->
+<!--        android:textColor="#2563EB"-->
+<!--        android:textSize="14sp" />-->
 
     <ProgressBar
         android:id="@+id/progressBar"

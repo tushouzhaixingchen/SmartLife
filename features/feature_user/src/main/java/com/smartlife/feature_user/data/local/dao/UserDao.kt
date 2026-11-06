@@ -10,4 +10,6 @@ import kotlinx.coroutines.flow.Flow
     @Insert suspend fun insertUser(user: UserEntity): Long
     @Query("SELECT * FROM user WHERE phone = :phone LIMIT 1")
     suspend fun findByPhone(phone: String): UserEntity?
+    @Query("SELECT * FROM user WHERE account = :account LIMIT 1")
+    suspend fun findByAccount(account: String): UserEntity?
 }
