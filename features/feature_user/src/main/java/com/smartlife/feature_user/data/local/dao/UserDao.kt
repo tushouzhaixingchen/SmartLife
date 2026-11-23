@@ -12,4 +12,6 @@ import kotlinx.coroutines.flow.Flow
     suspend fun findByPhone(phone: String): UserEntity?
     @Query("SELECT * FROM user WHERE account = :account LIMIT 1")
     suspend fun findByAccount(account: String): UserEntity?
+    @Query("SELECT * FROM user WHERE email = :email LIMIT 1")
+    suspend fun findByEmail(email: String): UserEntity?
 }

@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.smartlife.feature_user.data.local.dao.UserDao
 import com.smartlife.feature_user.data.local.entity.UserEntity
 
-@Database(entities=[UserEntity::class], version=4, exportSchema=false)
+@Database(entities=[UserEntity::class], version=5, exportSchema=false)
 abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     companion object {

@@ -4,6 +4,9 @@ import com.smartlife.feature_user.data.datastore.AuthDataStore
 import com.smartlife.feature_user.data.local.dao.UserDao
 import com.smartlife.feature_user.data.local.entity.UserEntity
 import com.smartlife.feature_user.data.remote.LocalAuthDataSource
+import com.smartlife.feature_user.data.repository.strategy.AccountPwdAuthStrategy
+import com.smartlife.feature_user.data.repository.strategy.EmailPwdAuthStrategy
+import com.smartlife.feature_user.data.repository.strategy.PhoneSmsAuthStrategy
 import com.smartlife.library_common.auth.AuthOutcome
 import com.smartlife.library_common.auth.AuthSession
 import com.smartlife.library_common.auth.AuthStrategy
@@ -19,12 +22,32 @@ class UserRepository @Inject constructor(
     private val authStore: AuthDataStore
 ) : BaseRepository(), AuthRepository {
     private val strategies: Map<AuthType, AuthStrategy> by lazy {
-        listOf(PhoneSmsAuthStrategy(local,authStore,userDao),
+        listOf(
+            PhoneSmsAuthStrategy(local, authStore, userDao),
             AccountPwdAuthStrategy(userDao),
-            EmailCodeAuthStrategy(local,authStore))
+            EmailPwdAuthStrategy(local, authStore)
+        )
             // .also { AuthProviderRegistry.register(it) }   // 也可在 Application 里统一注册
             .associateBy { it.type }
     }
+
+    /**
+     * 统一账号解析器：智能判断输入的是手机号、邮箱还是自定义账号
+     */
+    suspend fun findUserByUniversalAccount(input: String): UserEntity? {
+        val account = input.trim()
+        return when {
+            // 1. 包含 @，按邮箱查
+            account.contains("@") -> userDao.findByEmail(account)
+
+            // 2. 纯数字且 11 位，按手机号查
+            account.length == 11 && account.all { it.isDigit() } -> userDao.findByPhone(account)
+
+            // 3. 其它，按自定义账号查
+            else -> userDao.findByAccount(account)
+        }
+    }
+
     override suspend fun sendCode(type: AuthType, account: String) = safeApiCall {
         when(type){                                              // TODO 阶段2 换远程实现
             AuthType.PHONE_SMS, AuthType.EMAIL_CODE -> local.sendCode(account)
